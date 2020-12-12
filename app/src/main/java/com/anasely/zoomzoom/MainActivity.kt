@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         // ster 41 dert variable bash n initializi dak editeText li radi ydkhl fih bnadem user name
         var editText=findViewById<EditText>(R.id.getUserName)
 
-        // hnaya khdit username  mn 3end bnadem o stockito f variable li smito userName
+        // hnaya khdit username  mn 3end bnadem o stockito f variable li smito userName2222222222222
         var userName=editText.text.toString()
 
         // hnaya t checkit wash bnadem madakhal walo za3ma btta 3la buttona o ma3ati ta userName
