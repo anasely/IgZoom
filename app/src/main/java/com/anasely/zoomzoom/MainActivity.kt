@@ -19,11 +19,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        // hnaya initializit l buttona , dertha f variable smito buttonSearch , bash nkhdm biha mn ba3d
+        //ici j'ai initialisé button de recherche et je mis ce dernier dans une variable <button_Search>
         var buttonSearch =findViewById<Button>(R.id.searchButton)
 
 
-        // hnaya fash nabta 3la buttona radi t exucuta function li smitha getPic
+
+        /
+        //Quand j'appuye sur le button la fonction getpic s'exécuter.
         buttonSearch.setOnClickListener{
 
             getPic()
@@ -32,32 +34,38 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getPic() {
-        // hadi progress bar initializitha o dertha f variable , raha darga f activity main db
-        var progressBar=findViewById<ProgressBar>(R.id.progressBar)
-        // ster 41 dert variable bash n initializi dak editeText li radi ydkhl fih bnadem user name
-        var editText=findViewById<EditText>(R.id.getUserName)
+    private fun getPic() {  //Création une function getPic()
 
-        // hnaya khdit username  mn 3end bnadem o stockito f variable li smito userName2222222222222
+
+        // J'ai initialisé  barre de progression dans  variable ProgressBar.
+        var progressBar=findViewById<ProgressBar>(R.id.progressBar)
+        // J'ai initialisé EditText dans variable EditText c'est  la zone ou dans le user entrer le username
+        var editText=findViewById<EditText>(R.id.getUserName)
+        //J'ai créé une variable dans laquelle je stocke le nom d'utilisateur saisi par l'utilisateur
         var userName=editText.text.toString()
 
-        // hnaya t checkit wash bnadem madakhal walo za3ma btta 3la buttona o ma3ati ta userName
+        // Pour vérifier si l'utilisateur a appuyé sur le bouton de recherche
+        // sans entrer le nom d'utilisateur dans la zone de texte
         if(userName.isEmpty()){
-            Toast.makeText(this,"Write an username to find his picture",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"Entre le nom d'utilisateur pour trouver leur photo ",Toast.LENGTH_LONG).show()
         }else{
 
-            // hnaya progress bar dertha tban hit hna bda search
+            // J'ai donne l'accord pour que la progressbar être visible parceque en a commence la recherche
             progressBar.visibility=View.VISIBLE
             var imageToHide=findViewById<ImageView>(R.id.imageView)
             imageToHide.visibility=View.GONE
-            // hnaya radi n jbad Json mn api
+
+
+            // Je récupere json a partir d'api
             Thread(Runnable {
-                // This part to get the JSON from the profile of Instagram
+                // Cette partie pour obtenir le JSON à partir du profil d'Instagram
                 val builder = StringBuilder()
                 try {
 
-                    // hada lien li anjbdo mno l json o dik userName hia li dakhal bnadem , raha f ster 44
-                    val url = "https://www.instagram.com/"+userName+"/?__a=1"
+                    //c'est le lien qui on va obtenir json A partir de ce lien on va obtenire json
+                    val url = "https://www.instagram.com/"+userName+"/?__a=1" //username c'est le nom d'utilisateur entrer par l'utilisateur.
+
+
                     val doc: Document? = Jsoup
                         .connect(url)
                         .ignoreContentType(true)
@@ -70,41 +78,45 @@ class MainActivity : AppCompatActivity() {
                     e.printStackTrace();
                 }
                 runOnUiThread {
-                    // This is the important part we got the Json from previous part now we are going to extract
-                    // informations from this Json ..
+                // C'est la partie importante que nous avons obtenu le Json de la partie
+                // précédente maintenant que nous allons extraire informations de ce Json ..
+                // Fondamentalement, nous avons obtenu le résultat mais et en arrière-plan maintenant nous allons l'afficher directement
 
 
                     try {
 
-                        // had partie biha anjbad taswira , kadkhol haja wst haja , jbdna f lwl jsonObjet( ster 79) , o bih dkhlna l graph ster (81)
-                        // o b graph dkhlna west user , o mn west user jbadna lien dyal tswira
+                        //en effet la methode de obtenir le username c'est comme l'heritage
+                        // en a dans l'interieur de jsonobejct le graph et dans le graph on a user
+                        // et sur le user en peut accede a les proprièté de ce user comme le lien de la photo de profil...
+
                         val jsonObj =
-                            JSONObject(builder.toString()) // Get the full Json object
+                            JSONObject(builder.toString()) // Obtenez l'objet Json complet
                         val graphql =
-                            jsonObj.getJSONObject("graphql") // Get the graphq1 object
+                            jsonObj.getJSONObject("graphql") //Récupère l'objet graphq1
                         val user =
-                            graphql.getJSONObject("user") // Get the user object from graphq1 object
+                            graphql.getJSONObject("user") // Récupère l'objet utilisateur de l'objet graphq1
 
                         if (!user.toString().isEmpty()) {
-                         //   hna dert progress bar dreg hit l9ina tswira dyal user
+                          //j'ai cache la progressBar parceque on a touver la photo
                             progressBar.visibility=View.GONE
 
 
-                            // hna variable smito profile picture wasto rani m stocker lien dyal image
+                            //j'ai crée une variable profil_picture dans le quel j'ai stocke lien d'image
                             var profile_picture=user.getString("profile_pic_url_hd")
 
 
-                            // hnaya dert variable intializit wsto tswira li raha 3endi f activity_main.xml bash nkhdm biha mn ba3d
+                            //j'ai inistialise  l'imageview dans variable image
                             var image=findViewById<ImageView>(R.id.imageView)
 
-                            // hnaya khdamt b library glide bash tswira li raha f lien f variable li f ster 93 bash n7tha f view dyali
+                            //J'ai utilisé la bibliothèque glide pour obtenir le lien stocké
+                            // dans profil_picture et le mettre dans mon view
                             Glide.with(this).load(profile_picture).into(image);
 
-                            imageToHide.visibility=View.VISIBLE
+                            imageToHide.visibility=View.VISIBLE //pour affiche la photo
                         }
 
 
-                        // Show the result layout and hide the search layout
+                        // Afficher la mise en page des résultats et masquer la mise en page de recherche
                     } catch (e: JSONException) {
                         Toast.makeText(
                             this@MainActivity,
